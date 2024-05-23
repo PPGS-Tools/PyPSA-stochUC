@@ -5,6 +5,7 @@ It provides a modular extension for the Python for Power System Analysis (PyPSA)
 
 This code was used to create the example in [Welfonder et al., 2024](#1).
 To improve usability the code will be updated in the future.
+The original code used in the paper can still be found under the tag [v1.0-alpha](https://github.com/PPGS-Tools/PyPSA-stochUC/releases/tag/v1.0-alpha).
 
 In the example the tool was used for unit commitment optimization for a waste-to-energy plant with heat storage and a battery energy storage system in Germany. 
 The example takes uncertain day-ahead and balancing power (aFRR) market prices, as well as heat load uncertainty into account. 
