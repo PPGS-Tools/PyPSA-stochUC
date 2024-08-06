@@ -60,12 +60,12 @@ class Forecast:
     @property
     def X_scaled(self):
         X_scaled=self.X.copy()
-        X_prices = self.X.loc[:,self.X.columns.isin(self.price_columns)].values
-        X_other = self.X.loc[:,~self.X.columns.isin(self.price_columns)].values
-        if self.X.columns.isin(self.price_columns).any():
-            X_scaled.loc[:,self.X.columns.isin(self.price_columns)] = self.__scalerXPrices.transform(X_prices)
-        if (~self.X.columns.isin(self.price_columns)).any():
-            X_scaled.loc[:,~(self.X.columns.isin(self.price_columns))] = self.__scalerXOther.transform(X_other)
+        X_prices = self.X.loc[:,self.X.columns.isin(self.price_columns)]
+        X_other = self.X.drop(columns=X_prices.columns)
+        if X_prices.size>0:
+            X_scaled[X_prices.columns] = self.__scalerXPrices.transform(X_prices.values)
+        if X_other.size>0:
+            X_scaled[X_other.columns] = self.__scalerXOther.transform(X_other.values)
         return X_scaled
     @property
     def y_scaled(self):
