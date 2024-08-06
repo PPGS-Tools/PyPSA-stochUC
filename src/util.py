@@ -35,7 +35,7 @@ def testData()->DataFrame:
     2021-12-31 22:00:00            8.410             2.13  6.433333           10640.0        6.32  15.615477
     2021-12-31 23:00:00            8.410             2.13  6.333333           11000.0       50.05  14.854040
     """
-    pathTestData = os.path.join(ROOT_DIR,"data/historic_data")
+    pathTestData = os.path.join(ROOT_DIR,"data/historical_data")
     dfs: list[DataFrame] = []
     for dirEntry in os.scandir(pathTestData):
         if dirEntry.is_file():
