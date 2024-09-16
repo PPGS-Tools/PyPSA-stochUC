@@ -59,6 +59,6 @@ Since the data of the district heat demand of the power plant was taken from int
 Insted for example a [generic district heat demand](https://gitlab.com/hotmaps/load_profile/load_profile_residential_heating_generic/-/blob/95072c85756627ecfc8448ffd1c11fe844c5fc64/data/hotmaps_task_2.7_load_profile_residential_heating_generic.csv) could be used.
 
 ## References
-<a id="1">Welfonder, T., Lips, J., Gmur, A., & Lens, H. (2024)</a>. An Open Source Stochastic Unit Commitment Tool using the PyPSA-Framework. https://doi.org/10.48550/arXiv.2405.06490
+<a id="1">Welfonder, T., Lips, J., Gmur, A., & Lens, H. (2024)</a>. An Open Source Stochastic Unit Commitment Tool using the PyPSA-Framework. 12th IFAC Symposium on Control of Power and Energy Systems - CPES 2024: Rabat, Morocco. https://doi.org/10.1016/j.ifacol.2024.07.485
 
 <a id="2">Brown, T., Hörsch, J., Hofmann, F., Neumann, F., Zeyen, L., Syranidis, C., Frysztacki, M., Schlachtberger, D., Glaum, P., & Parzen, M. (2018)</a>. PyPSA: Python for Power System Analysis (Version 0.28.0) [Computer software]. https://doi.org/10.5334/jors.188
