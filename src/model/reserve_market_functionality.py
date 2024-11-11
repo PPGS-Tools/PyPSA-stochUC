@@ -211,7 +211,10 @@ def get_aFRR_bids(n: Network)->pd.DataFrame:
     bids_price= get_aFRR_prices().sel(market="aFRR")
     bids_pos.columns = bids_price.sel(prod="pos")
     bids_neg.columns = bids_price.sel(prod="neg")
-    return pd.concat([bids_pos,bids_neg],axis=1,keys=["pos","neg"],names=["prod"])
+    bids = pd.concat([bids_pos,bids_neg],axis=1,keys=["pos","neg"],names=["prod"])
+    # only keep the first bid for every 4-hour block
+    bids = bids[bids.index.hour%4==0]
+    return bids
 
 def get_aFRR_prices()->xr.DataArray:
     aFRRPriceLevels = pd.RangeIndex(0,11,name="pricelevel")
