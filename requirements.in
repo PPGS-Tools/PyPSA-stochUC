@@ -1,8 +1,8 @@
 gurobipy
 matplotlib
 numpy
-pandas==1.5.2
+pandas
 pmdarima==2.0.2
-pypsa==0.23.0
+pypsa
 PyYAML
 statsmodels==0.13.5
