@@ -1,6 +1,6 @@
 from Optimierung2 import createNetwork,getScenarios,extra_functionality,extra_postprocessing,setScenarios
-from gesammelteVorhersage import GesammelteVorhersage
-from Daten.Zeitreihe import ladeVorverarbeiteteDaten
+from src.util import testData
+from src.forecast import forecast_loader
 import pandas as pd
 import time
 import warnings
@@ -20,7 +20,7 @@ def multistageOpti(startDay,days=4):
 
     stopDate = pd.Timestamp(startDay).replace(hour=23) + pd.Timedelta(days=days)
     snapshots = pd.date_range(startDay,stopDate,freq="H")
-    gv = GesammelteVorhersage(disp=False)
+    gv = forecast_loader.fitForecasts()
 
     def copyBids(nFrom,nTo):
         bidsC = nFrom.global_constraints_t.bid_capacity.copy()
@@ -28,7 +28,7 @@ def multistageOpti(startDay,days=4):
         nTo.global_constraints_t.bid_capacity = bidsC
         nTo.global_constraints_t.bid_price = bidsP
 
-    df = ladeVorverarbeiteteDaten("1H",filled=True).loc[snapshots]
+    df =testData()
     aFRR_pos = df[["pos_aFRR_[EURO/MW]"]]
     aFRR_pos.columns = [0]
     aFRR_neg = df[["neg_aFRR_[EURO/MW]"]]
