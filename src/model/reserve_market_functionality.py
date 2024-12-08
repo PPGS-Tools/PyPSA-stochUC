@@ -178,9 +178,9 @@ def add_reserve_market_to_model(n: Network):
         bid_capacity = m.add_variables(name="aFRR-bid_capacity",coords=[snapshots,markets,prod,aFRRPriceLevels],lower=0)
 
         marginal_cost_pos = get_switchable_as_dense(n, "aFRR_Market", "marginal_cost_pos",inds=markets).unstack().to_xarray()
-        marginal_cost_pos = marginal_cost_pos.rename({"level_0":"market"})
+        marginal_cost_pos = marginal_cost_pos.rename({"aFRR_Market":"market"})
         marginal_cost_neg = get_switchable_as_dense(n, "aFRR_Market", "marginal_cost_neg",inds=markets).unstack().to_xarray()
-        marginal_cost_neg = marginal_cost_neg.rename({"level_0":"market"})
+        marginal_cost_neg = marginal_cost_neg.rename({"aFRR_Market":"market"})
         marginal_cost = xr.concat([marginal_cost_pos,marginal_cost_neg],prod)
         accepted = bid_price<=marginal_cost
         total_accepted_capacity = (accepted*bid_capacity).sum(["pricelevel","market"])
