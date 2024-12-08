@@ -61,7 +61,7 @@ def fitForecasts()->dict[str,Forecast]:
         seasonalitiesList=[3,6,42,2190],
         price_columns=PRICE_COLUMNS,
         lowTol=False,
-        freq="4H")
+        freq="4h")
     
     print("\t🏗️  Fitting aFRR_neg model")
     forecasts["aFRR_neg"] = Forecast(
@@ -71,7 +71,7 @@ def fitForecasts()->dict[str,Forecast]:
         seasonalitiesList=[3,6,42,2190],
         price_columns=PRICE_COLUMNS,
         lowTol=False,
-        freq="4H")
+        freq="4h")
     
     print("\t🏗️  Fitting q_fern model")
     forecasts["q_fern"] = Forecast(

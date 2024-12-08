@@ -16,7 +16,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX, SARIMAXResults
 
 
 class Forecast:
-    def __init__(self,y:Series,X:DataFrame | Series,arima_order,seasonalitiesList:list[int],lowTol = False, price_columns:list[str]=list(),freq="1H") -> None:
+    def __init__(self,y:Series,X:DataFrame | Series,arima_order,seasonalitiesList:list[int],lowTol = False, price_columns:list[str]=list(),freq="1h") -> None:
         self.freq = freq
         if isinstance(X,Series):
             X = X.to_frame()
