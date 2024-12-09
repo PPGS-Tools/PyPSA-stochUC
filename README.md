@@ -6,6 +6,13 @@ It provides a modular extension for the Python for Power System Analysis (PyPSA)
 This code was used to create the example in [Welfonder et al., 2024](#1).
 To improve usability the code will be updated in the future.
 The original code used in the paper can still be found under the tag [v1.0-alpha](https://github.com/PPGS-Tools/PyPSA-stochUC/releases/tag/v1.0-alpha).
+We are currently working on a new version of the code, to make it compatible with the latest version of PyPSA and to improve the usability.
+In particular, we switch from the old Pyomo implementation to the new Linopy implementation.
+This version can be found on the [Linopy branch](https://github.com/PPGS-Tools/PyPSA-stochUC/tree/linopy) and is a work in progress version.
+The Linopy version does not yet feature the full functionality, but is already compatible with the latest version of PyPSA.
+An workin example of the Linopy version can be found in the [Linopy example](https://github.com/PPGS-Tools/PyPSA-stochUC/blob/linopy/example.ipynb).
+The version on the main branch is still written in Pyomo and features the whole functionality of the original code.
+
 
 In the example the tool was used for unit commitment optimization for a waste-to-energy plant with heat storage and a battery energy storage system in Germany. 
 The example takes uncertain day-ahead and balancing power (aFRR) market prices, as well as heat load uncertainty into account. 
@@ -35,6 +42,8 @@ This is done, using a rolling horizon and multistaging.
 New forecasts are created for each stage and each day.
 The results are written into the directory `Results/`.
 The results include the optimal bids on the day-ahead and aFRR market.
+
+A more detailed usage can be seen in the [example](https://github.com/PPGS-Tools/PyPSA-stochUC/blob/linopy/example.ipynb) on the Linopy Branch.
 
 ![Optimal bids](./data/images/bids.svg)
 
