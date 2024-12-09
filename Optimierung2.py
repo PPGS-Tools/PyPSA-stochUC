@@ -138,7 +138,7 @@ def addWaermespeicher(n,s):
     n.madd("Link","heatcharge"+s, bus0="busheat"+s, bus1="busstore"+s, p_nom=10, efficiency=effwatertank)
     n.madd("Link","heatdischarge"+s, bus0="busstore"+s, bus1="busheat"+s, p_nom=10, efficiency=effwatertank)
 
-    n.madd("Load","loadheat"+s, bus = "busheat"+s, p_set = n.Q_fern, carrier = "heat")
+    n.madd("Load","loadheat"+s, bus = "busheat"+s, p_set = n.q_fern, carrier = "heat")
     n.madd("Generator","penaltyQ"+s, bus = "busheat"+s, p_max_pu=1, p_min_pu=0,p_nom= 10000,marginal_cost = 1000, carrier = "heat")
 
 def addDayAheadMarkt(n,s):
@@ -147,8 +147,8 @@ def addDayAheadMarkt(n,s):
     # n.madd("Generator","penaltyNeg"+s, bus = "buselec"+s, p_max_pu=0, p_min_pu=-1,p_nom= 10000,marginal_cost = -1000)
 
 def setScenarios(n,preds):
-    scenarios,p_scenarios = getScenarios(preds,{"aFRR_pos":"aFRRpos","aFRR_neg":"aFRRneg","Da":"dagen","Q_fern":"loadheat"})
-    snapshots = scenarios["Da"].index
+    scenarios,p_scenarios = getScenarios(preds,{"aFRR_pos":"aFRRpos","aFRR_neg":"aFRRneg","da":"dagen","q_fern":"loadheat"})
+    snapshots = scenarios["da"].index
     nScenarios = len(p_scenarios)
     print(f"{nScenarios} Szenarios werden erstellt ...")
     S = pd.Index([f"_S{s:04d}" for s in range(nScenarios)])
@@ -159,23 +159,23 @@ def setScenarios(n,preds):
         last = n.snapshots[-1]
         dayIndex = pd.date_range(first,last,freq="D")
         n.p_scenarios = pd.DataFrame(index=dayIndex,columns=p_scenarios.keys(),dtype=float)
-        n.da = pd.DataFrame(index=n.snapshots,columns=scenarios["Da"].columns,dtype=float)
+        n.da = pd.DataFrame(index=n.snapshots,columns=scenarios["da"].columns,dtype=float)
         n.aFRR_pos = pd.DataFrame(index=n.snapshots,columns=scenarios["aFRR_pos"].columns,dtype=float)
         n.aFRR_neg = pd.DataFrame(index=n.snapshots,columns=scenarios["aFRR_neg"].columns,dtype=float)
-        n.Q_fern = pd.DataFrame(index=n.snapshots,columns=scenarios["Q_fern"].columns,dtype=float)
+        n.q_fern = pd.DataFrame(index=n.snapshots,columns=scenarios["q_fern"].columns,dtype=float)
     first = snapshots[0]
     last = snapshots[-1]
     dayIndex = pd.date_range(first,last,freq="D")
     n.p_scenarios.loc[dayIndex] = pd.Series(p_scenarios).values   
         
-    n.da.loc[snapshots] = scenarios["Da"].astype(float)
+    n.da.loc[snapshots] = scenarios["da"].astype(float)
     n.aFRR_pos.loc[snapshots] = scenarios["aFRR_pos"].astype(float).clip(0)
     n.aFRR_neg.loc[snapshots] = scenarios["aFRR_neg"].astype(float).clip(0)
-    n.Q_fern.loc[snapshots] = scenarios["Q_fern"].astype(float).clip(lower=0,upper=29.605900) # Dies ist der Maximalwert des Datensatzes. Bei überschreitung wird das Problem infeasible
+    n.q_fern.loc[snapshots] = scenarios["q_fern"].astype(float).clip(lower=0,upper=29.605900) # Dies ist der Maximalwert des Datensatzes. Bei überschreitung wird das Problem infeasible
 
     if not RANGE_PRICEINDEX:
         priceLevels = {}
-        priceLevels["Da"] = preds["Da"][0]
+        priceLevels["da"] = preds["da"][0]
         priceLevels["aFRR_pos"] = preds["aFRR_pos"][0].clip(0) # Negative Preise sind hier nicht möglich
         priceLevels["aFRR_neg"] = preds["aFRR_neg"][0].clip(0) # Negative Preise sind hier nicht möglich
         if not hasattr(n,"priceLevels"):
@@ -186,15 +186,15 @@ def setScenarios(n,preds):
     else:
         if not hasattr(n,"priceLevels"):
             # Für aFRR_pos, aFRR_neg und werden 10 Preisniveaus erstellt
-            columns = pd.MultiIndex.from_product([["aFRR_pos","aFRR_neg","Da"],range(10)])
+            columns = pd.MultiIndex.from_product([["aFRR_pos","aFRR_neg","da"],range(10)])
             n.priceLevels = pd.DataFrame(index=n.snapshots,columns=columns)
-            n.priceLevels.loc[:,"Da"] = np.concatenate([[-500],np.linspace(-100,100,10)])
+            n.priceLevels.loc[:,"da"] = np.concatenate([[-500],np.linspace(-100,100,9)])
             n.priceLevels.loc[:,"aFRR_pos"] = np.concatenate([np.linspace(0,10,6),np.linspace(15,30,4)])
             n.priceLevels.loc[:,"aFRR_neg"] = np.concatenate([np.linspace(0,10,6),np.linspace(15,30,4)])
 
     if len(n.generators.index)>0:
         n.generators_t.marginal_cost.loc[snapshots,"dagen"+S] = n.da
-        n.loads_t.p_set.loc[snapshots,"loadheat"+S] = n.Q_fern
+        n.loads_t.p_set.loc[snapshots,"loadheat"+S] = n.q_fern
 
 def getScenarios(preds,componentNames):
     """
@@ -244,7 +244,7 @@ def getScenarios(preds,componentNames):
 # from gesammelteVorhersage import GesammelteVorhersage
 # if __name__ == "__main__":
 #     preds = GesammelteVorhersage().getClusteredForecast(10,"2019-01-19")
-#     scen = getScenarios(preds,{"aFRR_pos":"aFRRpos","aFRR_neg":"aFRRneg","Da":"dagen","Q_fern":"loadheat"})
+#     scen = getScenarios(preds,{"aFRR_pos":"aFRRpos","aFRR_neg":"aFRRneg","da":"dagen","q_fern":"loadheat"})
 #     n = createNetwork(scen)
 #     print(n)
 
@@ -429,11 +429,11 @@ def stochasticOpt(network,snapshots):
             return False
         return True
     
-    if isFixed("Da"):
-        columns = network.global_constraints_t.bid_price[["Da"]].columns
+    if isFixed("da"):
+        columns = network.global_constraints_t.bid_price[["da"]].columns
         network.priceLevels[columns] = network.global_constraints_t.bid_price[columns]
-        unwantedColumns = network.priceLevels["Da"].columns.difference(network.global_constraints_t.bid_price["Da"].columns)
-        unwantedColumns = pd.MultiIndex.from_product([["Da"],unwantedColumns])
+        unwantedColumns = network.priceLevels["da"].columns.difference(network.global_constraints_t.bid_price["da"].columns)
+        unwantedColumns = pd.MultiIndex.from_product([["da"],unwantedColumns])
         network.priceLevels.drop(columns=unwantedColumns,inplace=True)
     if isFixed("aFRR_pos"): 
         columns = network.global_constraints_t.bid_price[["aFRR_pos"]].columns
@@ -448,11 +448,11 @@ def stochasticOpt(network,snapshots):
         unwantedColumns = pd.MultiIndex.from_product([["aFRR_neg"],unwantedColumns])
         network.priceLevels.drop(columns=unwantedColumns,inplace=True)
 
-    network.priceLevels = network.priceLevels[["Da","aFRR_pos","aFRR_neg"]] # Order columns of PriceLevels
+    network.priceLevels = network.priceLevels[["da","aFRR_pos","aFRR_neg"]] # Order columns of PriceLevels
     priceLevels = network.priceLevels
 
     #init Price index
-    network.model.J = RangeSet(0,len(priceLevels["Da"].columns)-1)
+    network.model.J = RangeSet(0,len(priceLevels["da"].columns)-1)
     J = network.model.J
     network.model.K = RangeSet(0,len(priceLevels["aFRR_pos"].columns)-1)
     K = network.model.K
@@ -481,11 +481,11 @@ def stochasticOpt(network,snapshots):
     free_pyomo_initializers(network.model.aFRR_neg_dispatch)
 
     # fix bids
-    if isFixed("Da"):
+    if isFixed("da"):
         for s in S:
             for j in J:
                 for sn in snapshots:
-                    network.model.Da_bid[sn,s,j].fix(network.global_constraints_t.bid_capacity.at[sn,("Da",j)])
+                    network.model.Da_bid[sn,s,j].fix(network.global_constraints_t.bid_capacity.at[sn,("da",j)])
     if isFixed("aFRR_pos"):
         for s in S:
             for k in K:
@@ -574,7 +574,7 @@ def stochasticOpt(network,snapshots):
     for sn in snapshots:
         for s in S:
             for j in J:
-                gamma[sn,s,j] = 1 if priceLevels.loc[sn,"Da"].loc[j] <= network.generators_t.marginal_cost.at[sn,"dagen"+s] else 0
+                gamma[sn,s,j] = 1 if priceLevels.loc[sn,"da"].loc[j] <= network.generators_t.marginal_cost.at[sn,"dagen"+s] else 0
 
     Da_dispatch_sum = {}
     for sn in snapshots:
@@ -586,7 +586,7 @@ def stochasticOpt(network,snapshots):
                         
     l_constraint(network.model,"Da_dispatch_sum",Da_dispatch_sum,snapshots,S)
 
-    if not isFixed("Da"):
+    if not isFixed("da"):
         # Dieser Constraint setzt Gebote, deren Preise höher als alle Szenarien sind auf 0
         # Dieser Constraint gilt jedoch nur solange die Gebote nicht bereits vor der Optimierung festliegen (fixed)
         Da_bid_unused ={}
@@ -789,9 +789,6 @@ def extra_postprocessing(network, snapshots, duals):
         if free:
             clear_indexedvar(indexedvar)
         return s
-
-    def set_from_series(df, series):
-        df.loc[snapshots] = series.unstack(0).reindex(columns=df.columns)
 
     def set_from_series(df, series):
         df.loc[snapshots] = series.unstack(0).reindex(columns=df.columns)

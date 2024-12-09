@@ -5,7 +5,7 @@ src = os.path.dirname(current)
 sys.path.append(src) 
 data = os.path.join(os.path.dirname(src),"data")
 
-from forecast import Forecast
+from src.forecast.forecast import Forecast
 
 FORECAST_NAMES = ["da","aFRR_pos","aFRR_neg","q_fern"]
 PRICE_COLUMNS = ['aFRR_neg_EUR_MW', 'aFRR_pos_EUR_MW', 'da_EUR_MWh']

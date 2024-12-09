@@ -3,6 +3,6 @@ matplotlib
 numpy
 pandas==1.5.2
 pmdarima==2.0.2
-pypsa==0.23.0
+pypsa==0.28.0
 PyYAML
 statsmodels==0.13.5

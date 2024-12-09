@@ -4,8 +4,8 @@ current = os.path.dirname(os.path.realpath(__file__))
 src = os.path.dirname(current) 
 sys.path.append(src) 
 
-from inv_scaler import StandardScaler, InvScaler
-from seasonality_features import SeasonalityFeatures
+from .inv_scaler import StandardScaler, InvScaler
+from .seasonality_features import SeasonalityFeatures
 
 
 import numpy as np
